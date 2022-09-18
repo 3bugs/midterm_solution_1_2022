@@ -1,23 +1,18 @@
 void main() {
-  // nested list, 2-dimensional list
-  var myList1 = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-  ];
-  print(myList1.length);
+  var myList = [1, 2, 3];
 
-  var myList3 = [
-    for (var subList in myList1)
-      for (var i in subList)
-        if (i % 2 == 0)
-          i,
-    for (var subList in myList1)
-      for (var i in subList)
-        if (i % 2 != 0)
-          i,
-  ];
+  // functional programming
 
-  print(myList3.length);
-  print(myList3);
+  // เมธอด forEach() คือ Higher-order function
+  //myList.forEach((item) => print(item));
+
+  // result จะเท่ากับ [11, 12, 13]
+  var result = myList.map((item) {
+    return "a";
+  }).toList();
+  print(result);
 }
+
+/*void myFunc(int num) {
+  print(num);
+}*/

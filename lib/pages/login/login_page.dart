@@ -112,12 +112,15 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildIndicator(_input.length >= 1),
+              for (var i = 0; i < _input.length; i++) _buildIndicator(true),
+              for (var i = _input.length; i < 6; i++) _buildIndicator(false),
+
+              /*_buildIndicator(_input.length >= 1),
               _buildIndicator(_input.length >= 2),
               _buildIndicator(_input.length >= 3),
               _buildIndicator(_input.length >= 4),
               _buildIndicator(_input.length >= 5),
-              _buildIndicator(_input.length >= 6),
+              _buildIndicator(_input.length >= 6),*/
             ],
           ),
           SizedBox(height: 30.0),
