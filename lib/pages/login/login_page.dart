@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:midterm_solution_1_2022/pages/main/main_page.dart';
+import 'package:midterm_solution_1_2022/utils/helpers.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,6 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   var _input = '';
+  var _message = '';
 
   Widget _buildIndicator(bool on) {
     return Padding(
@@ -28,14 +31,46 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _handleClickButton(int num) {
+    const password = '123456';
+
+    setState(() {
+      if (num == -1) {
+        _input = _input.substring(0, _input.length - 1);
+      } else {
+        _input = _input + num.toString();
+      }
+    });
+
+    if (_input.length == 6) {
+      // ตรวจสอบรหัสผ่านว่าถูกต้องหรือไม่
+      if (_input == password) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
+
+        setState(() {
+          _message = 'ยินดีต้อนรับสู่ Mobile Banking App :)';
+        });
+      } else {
+        showMyDialog(context, 'Sorry', 'Incorrect PIN. Please try again.');
+
+        setState(() {
+          _input = '';
+          //_message = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่';
+        });
+      }
+    }
+  }
+
   Widget _buildNumberButton(int num) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: () {
-          setState(() {
-            _input = _input + num.toString();
-          });
+          // function expression ทำหน้าที่เป็น callback function
+          _handleClickButton(num);
         },
         customBorder: CircleBorder(),
         child: Container(
@@ -44,18 +79,22 @@ class _LoginPageState extends State<LoginPage> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Color(0xFFCCCCCC),
-              width: 1.0,
-            ),
+            border: num != -1
+                ? Border.all(
+                    color: Color(0xFFCCCCCC),
+                    width: 1.0,
+                  )
+                : null,
           ),
-          child: Text(
-            num.toString(),
-            style: GoogleFonts.firaCode(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: num == -1
+              ? Icon(Icons.backspace_outlined)
+              : Text(
+                  num.toString(),
+                  style: GoogleFonts.firaCode(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
         ),
       ),
     );
@@ -73,44 +112,39 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildIndicator(_input.length >= 1 ? true : false),
-              _buildIndicator(_input.length >= 2 ? true : false),
-              _buildIndicator(false),
-              _buildIndicator(false),
-              _buildIndicator(false),
-              _buildIndicator(false),
+              _buildIndicator(_input.length >= 1),
+              _buildIndicator(_input.length >= 2),
+              _buildIndicator(_input.length >= 3),
+              _buildIndicator(_input.length >= 4),
+              _buildIndicator(_input.length >= 5),
+              _buildIndicator(_input.length >= 6),
             ],
           ),
           SizedBox(height: 30.0),
           Column(
             children: [
+              for (var row in [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+              ])
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [for (var i in row) _buildNumberButton(i)],
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildNumberButton(1),
-                  _buildNumberButton(2),
-                  _buildNumberButton(3),
+                  SizedBox(width: 76.0, height: 76.0),
+                  _buildNumberButton(0),
+                  _buildNumberButton(-1),
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildNumberButton(4),
-                  _buildNumberButton(5),
-                  _buildNumberButton(6),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildNumberButton(7),
-                  _buildNumberButton(8),
-                  _buildNumberButton(9),
-                ],
-              ),
+              )
             ],
           ),
-          Text(_input),
+          //Text(_input),
+          SizedBox(height: 16.0),
+          Text(_message),
         ],
       ),
     );
